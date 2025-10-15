@@ -55,7 +55,7 @@ The API will be available at http://127.0.0.1:8000.
 Navigate to the frontend directory and simply open the index.html file in your preferred web browser.
 
 cd frontend
-# Then open index.html in Chrome, Firefox, Safari, etc.
+Then open index.html in Chrome, Firefox, Safari, etc.
 
 The frontend will automatically connect to the running backend service.
 
