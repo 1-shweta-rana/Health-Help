@@ -1,5 +1,5 @@
-🩺 Health Help: Healthcare Symptom Checker Chatbot
-Introduction & Project Context
+🩺 Health Help: Healthcare Symptom Checker Chatbot                                                                                                                                                                  
+Introduction & Project Context                                                                                                                                                                                       
 My name is Shweta Rana, and I am a final-year student at VIT. This project is an assignment I am developing for Unthinkable, and it represents a significant step in my journey from academic knowledge to practical, full-stack application development.
 
 This assignment is teaching me how to integrate foundational skills in HTML/CSS with more complex backend technologies. While I have prior experience with RAG chatbots and LLMs, this project is my first time building and managing a live API, connecting it to a user interface, and structuring it for a real-world use case.
