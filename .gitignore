@@ -1,0 +1,21 @@
+# --- Python Virtual Environment ---
+# Ignore the virtual environment folder
+venv/
+
+# --- Python Cache Files ---
+# Ignore the folder Python creates for compiled files
+__pycache__/
+
+# --- Environment Variables ---
+# CRITICAL: Ignore the file containing secret keys
+# This should be in the backend folder, but this rule will catch it anywhere.
+.env
+
+# --- Database Files ---
+# Ignore the SQLite database file
+*.db
+*.sqlite3
+
+# --- IDE/Editor Specific ---
+# Ignore VS Code specific settings folder
+.vscode/
