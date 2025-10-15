@@ -3,174 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Symptom Checker Chatbot 🩺</title>
+    <title>Health Help 🩺</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
-        #chat-window::-webkit-scrollbar {
-            width: 8px;
-        }
-        #chat-window::-webkit-scrollbar-track {
-            background: #1e293b; /* slate-800 */
-        }
-        #chat-window::-webkit-scrollbar-thumb {
-            background-color: #475569; /* slate-600 */
-            border-radius: 10px;
-            border: 2px solid #1e293b; /* slate-800 */
-        }
-        .typing-indicator span {
-            height: 8px;
-            width: 8px;
-            background-color: #94a3b8; /* slate-400 */
-            border-radius: 50%;
-            display: inline-block;
-            animation: bounce 1.4s infinite ease-in-out both;
-        }
-        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1.0); }
+        #chat-window {
+            height: calc(100vh - 12rem);
         }
     </style>
 </head>
-<body class="bg-black text-slate-200 flex items-center justify-center min-h-screen">
-    <div class="w-full max-w-2xl h-[90vh] mx-auto flex flex-col p-4">
-        
-        <!-- Header -->
-        <div class="text-center mb-4 flex-shrink-0">
-            <h1 class="text-3xl font-bold text-slate-100">Symptom Checker Bot 🩺</h1>
-            <p class="text-sm text-slate-400">This is an educational AI. Not for medical advice.</p>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center h-screen p-4">
+
+    <div class="w-full max-w-2xl mx-auto bg-gray-800 rounded-2xl shadow-2xl flex flex-col h-full">
+        <!-- Header --><div class="p-4 border-b border-gray-700 flex items-center space-x-4 rounded-t-2xl">
+            <!-- Logo with Medical Cross Icon --><div class="w-12 h-12 flex-shrink-0 bg-indigo-600 rounded-full flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+            </div>
+            <!-- Title and Subtitle --><div class="text-left">
+                <h1 class="text-xl font-bold text-indigo-400">Health Help 🩺</h1>
+                <p class="text-sm text-gray-400">Your own Symptom Checker Bot.</p>
+            </div>
         </div>
 
-        <!-- Chat Window -->
-        <div class="flex-grow bg-slate-900/80 rounded-2xl shadow-2xl border border-slate-700 flex flex-col overflow-hidden">
-            <div id="chat-window" class="flex-grow p-4 space-y-4 overflow-y-auto">
-                <!-- Messages will be appended here -->
-            </div>
 
-            <!-- Typing Indicator -->
-            <div id="typing-indicator" class="hidden p-4">
-                <div class="flex items-center space-x-2">
-                     <div class="w-10 h-10 rounded-full flex-shrink-0 bg-slate-700"></div>
-                    <div class="bg-slate-700 p-3 rounded-lg typing-indicator">
-                        <span></span><span></span><span></span>
-                    </div>
-                </div>
-            </div>
+        <!-- Chat Window --><div id="chat-window" class="flex-1 p-6 overflow-y-auto space-y-4">
+            <!-- Messages will be injected here --></div>
 
-            <!-- Input Area -->
-            <div class="p-4 bg-slate-900/50 border-t border-slate-700">
-                <div class="flex items-center space-x-2">
-                    <input type="text" id="message-input" class="w-full p-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="Type your message..." autocomplete="off">
-                    <button id="send-btn" class="bg-indigo-600 text-white font-semibold py-3 px-5 rounded-lg hover:bg-indigo-700 transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
-                        Send
-                    </button>
-                </div>
+        <!-- Input Area --><div class="p-4 border-t border-gray-700 rounded-b-2xl">
+            <div id="error-box" class="hidden bg-red-900/50 text-red-300 p-3 rounded-lg mb-4 text-sm"></div>
+            <div class="flex items-center space-x-4">
+                <input type="text" id="user-input" class="flex-1 bg-gray-700 border border-gray-600 rounded-full py-3 px-6 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400" placeholder="Type your message..." autocomplete="off">
+                <button id="send-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full p-3 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.428A1 1 0 0010 16h.008a1 1 0 00.724-.308l5-5a1 1 0 000-1.414l-5-5a1 1 0 00-.832-.247z" />
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
 
     <script>
         const chatWindow = document.getElementById('chat-window');
-        const messageInput = document.getElementById('message-input');
+        const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
-        const typingIndicator = document.getElementById('typing-indicator');
+        const errorBox = document.getElementById('error-box');
 
-        // This will store the entire conversation in the required format for the API
-        let chatHistory = [];
+        const API_URL = 'http://127.0.0.1:8000/chat';
 
-        const scrollToBottom = () => {
+        let conversationHistory = [];
+
+        // --- Functions to add messages to the UI ---
+        const addMessage = (sender, message) => {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+
+            // A simple markdown to HTML converter for bot messages
+            let formattedMessage = message;
+            if (sender === 'bot') {
+                 // Convert all newlines to <br> first to preserve them
+                formattedMessage = formattedMessage.replace(/\n/g, '<br>');
+                // Bold: **text** -> <strong>text</strong>
+                formattedMessage = formattedMessage.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                // Headers: ### text -> <h3>text</h3>
+                formattedMessage = formattedMessage.replace(/### (.*?)(<br>|$)/g, '<h3 class="text-lg font-semibold mt-4 mb-2">$1</h3>');
+                // Unordered list: * text -> <li>text</li>, then wrap in <ul>
+                formattedMessage = formattedMessage.replace(/<br>\* (.*?)(<br>|$)/g, '<li>$1</li>');
+                if (formattedMessage.includes('<li>')) {
+                    formattedMessage = `<ul>${formattedMessage.replace(/<\/li><br>/g, '</li>')}</ul>`.replace(/<\/ul><ul>/g, '');
+                }
+            }
+
+
+            messageDiv.innerHTML = `
+                <div class="max-w-md p-4 rounded-2xl ${sender === 'user' ? 'bg-indigo-600' : 'bg-gray-700'}">
+                    <p class="text-white">${formattedMessage}</p>
+                </div>
+            `;
+            chatWindow.appendChild(messageDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight; // Auto-scroll to bottom
+        };
+
+        const showLoadingIndicator = () => {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = 'loading-indicator';
+            loadingDiv.className = 'flex justify-start';
+            loadingDiv.innerHTML = `
+                <div class="max-w-md p-4 rounded-2xl bg-gray-700">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
+                    </div>
+                </div>
+            `;
+            chatWindow.appendChild(loadingDiv);
             chatWindow.scrollTop = chatWindow.scrollHeight;
         };
 
-        const addUserMessage = (message) => {
-            const messageElement = document.createElement('div');
-            messageElement.className = 'flex justify-end';
-            messageElement.innerHTML = `<div class="bg-indigo-600 text-white p-3 rounded-lg max-w-xs md:max-w-md break-words">${message}</div>`;
-            chatWindow.appendChild(messageElement);
-            scrollToBottom();
-        };
-
-        const addBotMessage = (message) => {
-            const messageElement = document.createElement('div');
-            messageElement.className = 'flex justify-start items-start space-x-2';
-            // Simple markdown to HTML conversion
-            let formattedMessage = message
-                .replace(/### (.*)/g, '<h3 class="text-lg font-bold mt-2 mb-1 text-slate-100">$1</h3>')
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\* (.*)/gm, (match, content) => `<li>${content}</li>`)
-                .replace(/(\<li\>.*\<\/li\>)/gs, '<ul>$1</ul>'); // Wrap LIs in UL
-
-            messageElement.innerHTML = `
-                <div class="w-8 h-8 rounded-full flex-shrink-0 bg-slate-700 mt-1"></div>
-                <div class="bg-slate-700 text-slate-200 p-3 rounded-lg max-w-xs md:max-w-md break-words">${formattedMessage}</div>`;
-            chatWindow.appendChild(messageElement);
-            scrollToBottom();
-        };
-
-        const setBotTyping = (isTyping) => {
-            typingIndicator.style.display = isTyping ? 'flex' : 'none';
-            if (isTyping) scrollToBottom();
+        const removeLoadingIndicator = () => {
+            const indicator = document.getElementById('loading-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
         };
         
-        const handleSend = async () => {
-            const userMessage = messageInput.value.trim();
+        const showError = (message) => {
+            errorBox.textContent = message;
+            errorBox.classList.remove('hidden');
+        };
+
+        const hideError = () => {
+            errorBox.classList.add('hidden');
+        };
+
+
+        // --- Main logic ---
+        const handleSendMessage = async () => {
+            const userMessage = userInput.value.trim();
             if (!userMessage) return;
 
-            addUserMessage(userMessage);
-            messageInput.value = '';
-            
-            chatHistory.push({ role: 'user', parts: [{ text: userMessage }] });
-            
-            setBotTyping(true);
+            // 1. Display user's message and update history
+            addMessage('user', userMessage);
+            conversationHistory.push({ role: 'user', content: userMessage });
+            userInput.value = '';
+            userInput.disabled = true;
             sendBtn.disabled = true;
-            messageInput.disabled = true;
+            hideError();
 
-            const backendUrl = 'http://127.0.0.1:8000/chat';
+            // 2. Show loading indicator
+            showLoadingIndicator();
+
+            // 3. Send history to backend
             try {
-                const response = await fetch(backendUrl, {
+                const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ history: chatHistory })
+                    body: JSON.stringify({ messages: conversationHistory })
                 });
+
+                removeLoadingIndicator();
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.detail || 'API request failed');
+                    throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
                 }
 
                 const data = await response.json();
-                const botReply = data.reply;
+                const botMessage = data.response;
 
-                chatHistory.push({ role: 'model', parts: [{ text: botReply }] });
-                addBotMessage(botReply);
+                // 4. Display bot's response and update history
+                addMessage('bot', botMessage);
+                conversationHistory.push({ role: 'model', content: botMessage });
 
             } catch (error) {
-                console.error('Error during chat:', error);
-                addBotMessage(`Sorry, an error occurred: ${error.message}. Please check if the backend is running.`);
+                console.error("Fetch error:", error);
+                removeLoadingIndicator();
+                showError(`Sorry, an error occurred: ${error.message}. Please check if the backend is running.`);
             } finally {
-                setBotTyping(false);
+                userInput.disabled = false;
                 sendBtn.disabled = false;
-                messageInput.disabled = false;
-                messageInput.focus();
+                userInput.focus();
             }
         };
 
-        sendBtn.addEventListener('click', handleSend);
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                handleSend();
+        // --- Event Listeners ---
+        sendBtn.addEventListener('click', handleSendMessage);
+        userInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                handleSendMessage();
             }
         });
 
-        // Initial greeting from the bot
-        const initialBotMessage = "Hello! I'm a helpful AI assistant. To start, please tell me about the main symptom you're experiencing.";
-        chatHistory.push({ role: 'model', parts: [{ text: initialBotMessage }] });
-        addBotMessage(initialBotMessage);
+        // --- Initial message from bot ---
+        const addInitialBotMessage = () => {
+            const initialMessage = "Hello! I'm Health Help, your friendly AI assistant. To start, please tell me about the main symptom you're experiencing.";
+            addMessage('bot', initialMessage);
+            // The initial message should come from the model, so we add it to the history
+            conversationHistory.push({ role: 'model', content: initialMessage });
+        };
+
+        window.onload = addInitialBotMessage;
+
     </script>
 </body>
 </html>
